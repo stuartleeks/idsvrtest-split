@@ -16,7 +16,10 @@ namespace idsvrtest
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentityServer()
+            services.AddIdentityServer(options =>
+            {
+                
+            })
                 .AddTemporarySigningCredential()
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients());
@@ -34,15 +37,20 @@ namespace idsvrtest
 
             app.UseIdentityServer();
 
-            app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
+            app.Map("/api", apiapp =>
             {
-                Authority = "http://localhost:5000",
-                RequireHttpsMetadata = false,
 
-                ApiName = "api1"
+                apiapp.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
+                {
+                    Authority = "http://localhost:5000",
+                    RequireHttpsMetadata = false,
+
+                    ApiName = "api1"
+                });
+
+                apiapp.UseMvc();
             });
 
-            app.UseMvc();
         }
     }
 }
