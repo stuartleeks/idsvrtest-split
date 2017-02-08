@@ -29,13 +29,18 @@
     </div>
     <div class="row">
         <div class="col-sm-8">
-            <dl>
-                @foreach (var claim in User.Claims)
-                {
-                    <dt>@claim.Type</dt>
-                    <dd>@claim.Value</dd>
-                }
-            </dl>
+            @foreach (var group in User.Claims.GroupBy(c => c.Issuer))
+            {
+                <h3>Issuer: @group.Key</h3>
+                <dl>
+                    @foreach (var claim in group)
+                    {
+                        <dt>@claim.Type</dt>
+                        <dd>@claim.Value</dd>
+                    }
+                </dl>
+            }
+
         </div>
     </div>
 </div>
