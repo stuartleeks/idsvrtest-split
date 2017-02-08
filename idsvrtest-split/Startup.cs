@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace idsvrtest
 {
@@ -18,9 +19,13 @@ namespace idsvrtest
         {
             services.AddIdentityServer(options =>
                 {
-
+                    options.UserInteraction.ConsentUrl = "/ui" + options.UserInteraction.ConsentUrl;
+                    options.UserInteraction.ErrorUrl = "/ui" + options.UserInteraction.ErrorUrl;
+                    options.UserInteraction.LoginUrl = "/ui" + options.UserInteraction.LoginUrl;
+                    options.UserInteraction.LogoutUrl = "/ui" + options.UserInteraction.LogoutUrl;
                 })
                 .AddTemporarySigningCredential()
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddTestUsers(Config.GetUsers());
@@ -40,7 +45,6 @@ namespace idsvrtest
 
             app.Map("/api", apiapp =>
             {
-
                 apiapp.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
                 {
                     Authority = "http://localhost:5000",
@@ -50,6 +54,31 @@ namespace idsvrtest
                 });
 
                 apiapp.UseMvc();
+            });
+
+            app.Map("/ui", uiapp =>
+            {
+                app.UseCookieAuthentication(new CookieAuthenticationOptions
+                {
+                    AuthenticationScheme = "Cookies"
+                });
+
+                JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+                app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
+                {
+                    AuthenticationScheme = "oidc",
+                    SignInScheme = "Cookies",
+
+                    Authority = "http://localhost:5000",
+                    RequireHttpsMetadata = false,
+
+                    ClientId = "mvc",
+                    SaveTokens = true
+                });
+
+                uiapp.UseStaticFiles();
+                uiapp.UseMvcWithDefaultRoute();
             });
 
         }
