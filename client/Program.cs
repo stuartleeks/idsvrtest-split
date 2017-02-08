@@ -22,8 +22,11 @@ class Program
 
             var discoveryClient = await DiscoveryClient.GetAsync("http://localhost:5000");
 
-            var tokenClient = new TokenClient(discoveryClient.TokenEndpoint, "client", "secret");
-            var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
+            //var tokenClient = new TokenClient(discoveryClient.TokenEndpoint, "client", "secret");
+            //var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
+            var tokenClient = new TokenClient(discoveryClient.TokenEndpoint, "ro.client", "secret");
+            var tokenResponse = await tokenClient.RequestResourceOwnerPasswordAsync("alice", "password", "api1");
+
 
             if (tokenResponse.IsError)
             {
@@ -49,7 +52,7 @@ class Program
                 Console.WriteLine(JArray.Parse(content));
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex);
         }

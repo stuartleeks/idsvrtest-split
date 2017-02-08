@@ -17,12 +17,13 @@ namespace idsvrtest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddIdentityServer(options =>
-            {
-                
-            })
+                {
+
+                })
                 .AddTemporarySigningCredential()
                 .AddInMemoryApiResources(Config.GetApiResources())
-                .AddInMemoryClients(Config.GetClients());
+                .AddInMemoryClients(Config.GetClients())
+                .AddTestUsers(Config.GetUsers());
 
             services.AddMvc();
         }
