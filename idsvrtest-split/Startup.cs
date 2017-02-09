@@ -21,7 +21,7 @@ namespace idsvrtest
             services.AddIdentityServer(options =>
                 {
                     options.UserInteraction.ConsentUrl = "/ui" + options.UserInteraction.ConsentUrl;
-                    options.UserInteraction.ErrorUrl = "/ui" + options.UserInteraction.ErrorUrl;
+                    options.UserInteraction.ErrorUrl = "/account/error";
                     options.UserInteraction.LoginUrl = options.UserInteraction.LoginUrl;
                     options.UserInteraction.LogoutUrl = options.UserInteraction.LogoutUrl;
                 })
@@ -112,6 +112,22 @@ namespace idsvrtest
 
                 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
+                // implicit
+                //app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
+                //{
+                //    AuthenticationScheme = "oidc",
+                //    SignInScheme = "Cookies",
+
+                //    Authority = "http://localhost:5000/identity",
+                //    RequireHttpsMetadata = false,
+
+                //    PostLogoutRedirectUri = "http://localhost:5000/ui",
+
+                //    ClientId = "mvc",
+                //    SaveTokens = true
+                //});
+
+                // hybrid
                 app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
                 {
                     AuthenticationScheme = "oidc",
@@ -122,7 +138,13 @@ namespace idsvrtest
 
                     PostLogoutRedirectUri = "http://localhost:5000/ui",
 
-                    ClientId = "mvc",
+                    ClientId = "mvc2",
+                    ClientSecret = "secret",
+
+                    ResponseType = "code id_token",
+                    Scope = { "api1", "offline_access" },
+
+                    GetClaimsFromUserInfoEndpoint = true,
                     SaveTokens = true
                 });
 
@@ -138,6 +160,10 @@ namespace idsvrtest
                         name: "home-secure",
                         template: "secure",
                         defaults: new { controller = "Home", action = "Secure" });
+                    routes.MapRoute(
+                        name: "home-call-api",
+                        template: "call-api",
+                        defaults: new { controller = "Home", action = "CallApiUsingUserAccessToken" });
                     routes.MapRoute(
                         name: "home-logout",
                         template: "logout",
