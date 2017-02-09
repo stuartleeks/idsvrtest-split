@@ -20,7 +20,7 @@ class Program
 
             Console.WriteLine("getting endpoint metadata...");
 
-            var discoveryClient = await DiscoveryClient.GetAsync("http://localhost:5000");
+            var discoveryClient = await DiscoveryClient.GetAsync("http://localhost:5000/identity");
 
             //var tokenClient = new TokenClient(discoveryClient.TokenEndpoint, "client", "secret");
             //var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
