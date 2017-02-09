@@ -93,6 +93,26 @@ namespace idsvrtest
                         "api1"
                     },
                     AllowOfflineAccess = true
+                },
+                new Client
+                {
+                    ClientId = "js",
+                    ClientName = "JavaScript Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris =           { "http://localhost:5000/ui/client-side/callback.html" },
+                    PostLogoutRedirectUris = { "http://localhost:5000/ui/client-side/index.html" },
+                    AllowedCorsOrigins =     { "http://localhost:5000" },
+
+                    RequireConsent = false,
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "api1"
+                    }
                 }
             };
         }

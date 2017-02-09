@@ -31,6 +31,19 @@ namespace idsvrtest
                 .AddInMemoryClients(Config.GetClients())
                 .AddTestUsers(Config.GetUsers());
 
+
+            // don't actually need this since we're all in one project/site
+            //services.AddCors(options =>
+            //{
+            //    // this defines a CORS policy called "default"
+            //    options.AddPolicy("default", policy =>
+            //    {
+            //        policy.WithOrigins("http://localhost:5003")
+            //            .AllowAnyHeader()
+            //            .AllowAnyMethod();
+            //    });
+            //});
+
             services.AddMvc();
         }
 
@@ -39,6 +52,9 @@ namespace idsvrtest
         {
             loggerFactory.AddConsole(LogLevel.Debug);
             //loggerFactory.AddDebug();
+
+            // don't actually need this since we're all in one project/site
+            //app.UseCors("default");
 
             app.UseDeveloperExceptionPage();
 
