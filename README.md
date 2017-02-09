@@ -11,6 +11,6 @@ To log out, click the username at the top of the page and log out.
 
 ## Status
 
-* Logging in works (local user and Google)
+* Logging in works (local user, Google and Facebook)
 * Logging out works
 * Need to look at hybrid flow and JS client

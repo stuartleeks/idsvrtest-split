@@ -55,6 +55,17 @@ namespace idsvrtest
                     AutomaticChallenge = false
                 });
 
+                app.UseFacebookAuthentication(new FacebookOptions()
+                {
+                    DisplayName = "Facebook",
+                    SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+
+                    CallbackPath = "/identity/signin-facebook",
+
+                    // should be in config ;-)
+                    AppId = "144306829413542",
+                    AppSecret = "119af382235437eca8bab5421325b90d"
+                });
                 app.UseGoogleAuthentication(new GoogleOptions
                 {
                     AuthenticationScheme = "Google",
