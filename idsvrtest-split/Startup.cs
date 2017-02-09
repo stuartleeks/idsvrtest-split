@@ -21,8 +21,8 @@ namespace idsvrtest
                 {
                     options.UserInteraction.ConsentUrl = "/ui" + options.UserInteraction.ConsentUrl;
                     options.UserInteraction.ErrorUrl = "/ui" + options.UserInteraction.ErrorUrl;
-                    options.UserInteraction.LoginUrl = "/ui" + options.UserInteraction.LoginUrl;
-                    options.UserInteraction.LogoutUrl = "/ui" + options.UserInteraction.LogoutUrl;
+                    options.UserInteraction.LoginUrl = options.UserInteraction.LoginUrl;
+                    options.UserInteraction.LogoutUrl = options.UserInteraction.LogoutUrl;
                 })
                 .AddTemporarySigningCredential()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
@@ -41,13 +41,31 @@ namespace idsvrtest
 
             app.UseDeveloperExceptionPage();
 
-            app.UseIdentityServer();
+            app.Map("/identity", idapp =>
+            {
+                JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+                idapp.UseIdentityServer();
+                app.UseCookieAuthentication(new CookieAuthenticationOptions
+                {
+                    AuthenticationScheme = "Cookies"
+                });
+
+                // Viewing Account controller as part of identity
+                idapp.UseStaticFiles();
+                idapp.UseMvc(routes =>
+                {
+                    routes.MapRoute(
+                        name: "account",
+                        template: "account/{action}",
+                        defaults: new { controller = "Account" });
+                });
+            });
 
             app.Map("/api", apiapp =>
             {
                 apiapp.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
                 {
-                    Authority = "http://localhost:5000",
+                    Authority = "http://localhost:5000/identity",
                     RequireHttpsMetadata = false,
 
                     ApiName = "api1"
@@ -70,16 +88,48 @@ namespace idsvrtest
                     AuthenticationScheme = "oidc",
                     SignInScheme = "Cookies",
 
-                    Authority = "http://localhost:5000",
+                    Authority = "http://localhost:5000/identity",
                     RequireHttpsMetadata = false,
+
+                    PostLogoutRedirectUri = "http://localhost:5000/ui",
 
                     ClientId = "mvc",
                     SaveTokens = true
                 });
 
+                // home controller is part of web ui
                 uiapp.UseStaticFiles();
-                uiapp.UseMvcWithDefaultRoute();
+                uiapp.UseMvc(routes =>
+                {
+                    routes.MapRoute(
+                        name: "home-index",
+                        template: "",
+                        defaults: new { controller = "Home", action = "Index" });
+                    routes.MapRoute(
+                        name: "home-secure",
+                        template: "secure",
+                        defaults: new { controller = "Home", action = "Secure" });
+                    routes.MapRoute(
+                        name: "home-logout",
+                        template: "logout",
+                        defaults: new { controller = "Home", action = "Logout" });
+                    routes.MapRoute(
+                        name: "home-error",
+                        template: "home/error", // keeping this for now as it's configured elsewhere
+                        defaults: new { controller = "Home", action = "Error" });
+
+                });
             });
+
+
+            // redirect to UI if here
+            app.Use((context, next) =>
+            {
+                context.Response.RedirectToAbsoluteUrl("/ui");
+                return Task.CompletedTask;
+            });
+
+
 
         }
     }

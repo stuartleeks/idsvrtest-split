@@ -19,8 +19,12 @@ namespace IdentityServer4.Quickstart.UI
             _interaction = interaction;
         }
 
-        [Authorize]
         public IActionResult Index()
+        {
+            return View();
+        }
+        [Authorize]
+        public IActionResult Secure()
         {
             return View();
         }

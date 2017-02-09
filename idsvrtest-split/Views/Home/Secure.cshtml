@@ -2,14 +2,8 @@
     <div class="row page-header">
         <div class="col-sm-10">
             <h1>
-                Welcome to MVC UI - anonymous page
+                Welcome to the MVC UI - Secure page
             </h1>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-8">
-            Go to <a asp-action="Secure">secure page</a>
         </div>
     </div>
 
@@ -22,7 +16,7 @@
                     @foreach (var claim in group)
                     {
                         <dt>@claim.Type</dt>
-                                <dd>@claim.Value</dd>
+                        <dd>@claim.Value</dd>
                     }
                 </dl>
             }
