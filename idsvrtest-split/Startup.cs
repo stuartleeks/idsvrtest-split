@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
+using IdentityServer4;
 
 namespace idsvrtest
 {
@@ -45,6 +46,27 @@ namespace idsvrtest
             {
                 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
                 idapp.UseIdentityServer();
+
+                app.UseCookieAuthentication(new CookieAuthenticationOptions
+                {
+                    AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+
+                    AutomaticAuthenticate = false,
+                    AutomaticChallenge = false
+                });
+
+                app.UseGoogleAuthentication(new GoogleOptions
+                {
+                    AuthenticationScheme = "Google",
+                    DisplayName = "Google",
+                    SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+
+                    CallbackPath = "/identity/signin-google",
+
+                    // should be in config ;-)
+                    ClientId = "461574742198-jkt3r1abnecj105qh02n610adj71nm6p.apps.googleusercontent.com",
+                    ClientSecret = "iXg1GKOC8J0KprjSfK0pKmto"
+                });
 
                 // Viewing Account controller as part of identity
                 idapp.UseStaticFiles();
