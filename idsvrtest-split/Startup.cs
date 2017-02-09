@@ -45,10 +45,6 @@ namespace idsvrtest
             {
                 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
                 idapp.UseIdentityServer();
-                app.UseCookieAuthentication(new CookieAuthenticationOptions
-                {
-                    AuthenticationScheme = "Cookies"
-                });
 
                 // Viewing Account controller as part of identity
                 idapp.UseStaticFiles();

@@ -13,5 +13,4 @@ To log out, click the username at the top of the page and log out.
 
 * Logging in works
 * Logging out works
-* When logged in, there are some duplicate claims. 
 * Need to look at hybrid flow and JS client
