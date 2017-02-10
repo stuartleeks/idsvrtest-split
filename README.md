@@ -14,4 +14,4 @@ To log out, click the username at the top of the page and log out.
 * Logging in works (local user, Google and Facebook)
 * Logging out works
   * Need to look at the post logout redirect as that isn't working
-* Need to look at JS client
+* JS Client works
